@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+     stroke="#22d3ee" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+     role="img" aria-label="音频">
+  <!-- 音符：一个符头 + 符干 + 符尾，表示「音乐 / 音频」 -->
+  <circle cx="7.2" cy="17.2" r="2.9" />
+  <path d="M10.1 17.2V5.6" />
+  <path d="M10.1 5.6c2.6.5 4.6 2 5.6 4.3" />
+  <path d="M10.1 9.4c2 .4 3.6 1.5 4.5 3.2" opacity=".55" />
+</svg>

@@ -1,0 +1,1 @@
+{"name":"amm-build-deps","private":true,"dependencies":{"esbuild":"^0.28.2","three":"0.170.0"}}

@@ -1,0 +1,18 @@
+{
+  "name": "asset-manager",
+  "version": "0.1.0",
+  "description": "本地素材管理器（纯净主程序，零类型知识，不含插件）",
+  "main": "src/main/index.js",
+  "author": "xilan",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "test": "electron tests/run.js",
+    "test:smoke": "electron . --smoke-test"
+  },
+  "devDependencies": {
+    "electron": "33.4.11"
+  }
+}

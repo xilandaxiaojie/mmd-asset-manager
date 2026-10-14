@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <!--
+    CSP 说明：script-src 只允许 'self'，所以本页面**不写内联脚本**——
+    加载完成/失败提示由 viewer 模块（经主程序注入）直接改 DOM。
+    本页面不刻意声明 <title>：窗口标题由主程序按「插件名 + 文件名」设置。
+  -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' asset:; img-src 'self' asset: data: blob:; style-src 'unsafe-inline'; script-src 'self'" />
+  <!-- 独立预览窗口的样式由插件目录内的本文件定义 -->
+  <style>
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
+      background: #1e1f24; color: #e2e4e8;
+      font-family: "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+    }
+    /* 内容容器：宿主给的空盒子；canvas 由 viewer 自行创建并塞进来 */
+    #host-content { width: 100%; height: 100%; display: block; outline: none; }
+
+    .host-title {
+      position: fixed; top: 12px; left: 16px; z-index: 10; pointer-events: none;
+      font-size: 13px; font-weight: 600; letter-spacing: .4px; color: #e0477f;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, .7);
+    }
+    .host-sub {
+      position: fixed; top: 31px; left: 16px; z-index: 10; pointer-events: none;
+      font-size: 11px; color: #8b93a1; text-shadow: 0 1px 4px rgba(0, 0, 0, .7);
+    }
+    .host-tips {
+      position: fixed; right: 16px; bottom: 12px; z-index: 10; pointer-events: none;
+      font-size: 11px; color: #6f7681; text-shadow: 0 1px 4px rgba(0, 0, 0, .7);
+    }
+    /* 模型就绪后由 viewer 加上 .loaded，收起提示 */
+    .host-sub.loaded { display: none; }
+  </style>
+</head>
+<body>
+  <div id="host-content"></div>
+  <div class="host-title">MMD 模型预览</div>
+  <div class="host-sub" id="host-sub">正在加载模型…</div>
+  <div class="host-tips">左键旋转 · 滚轮缩放 · 右键/中键平移</div>
+</body>
+</html>

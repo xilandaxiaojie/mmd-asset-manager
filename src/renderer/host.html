@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <!-- 渲染宿主页：既作为缩略图离屏渲染页，也作为插件未提供 previewHtml 时的预览兜底页。
+
+       主程序在这里只提供一个**空的内容容器**（#host-content），里面放什么由插件决定
+       （canvas / video / audio / iframe / 任意 DOM）—— 宿主不含任何素材类型假设。
+
+       插件渲染模块需要通过 asset:// 读取素材，因此必须放开 connect-src / img-src /
+       media-src 到 asset:（XHR / fetch / <img> / <video> / <audio>）；blob: 供插件内部
+       生成的临时资源使用。 -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' asset: data: blob:; connect-src 'self' asset: data: blob:; media-src 'self' asset: data: blob:; worker-src 'self' blob:; style-src 'unsafe-inline'; script-src 'self' blob:" />
+  <title>渲染宿主</title>
+  <style>
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #1e1f24; }
+    /* 内容容器：撑满窗口的空盒子；方向、排版、内部元素全部交给插件 */
+    #host-content { width: 100%; height: 100%; display: block; }
+  </style>
+</head>
+<body>
+  <div id="host-content"></div>
+</body>
+</html>

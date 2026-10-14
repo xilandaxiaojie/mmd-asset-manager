@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <!--
+    CSP 说明：
+      • script-src 只允许 'self'，所以本页面**不写内联脚本** ——
+        播放器逻辑全在 viewer.mjs（由主程序动态 import 并注入）。
+      • media-src 必须放开 asset:，否则 <video> 读不了素材文件。
+      • 本页面不声明 <title>：窗口标题由主程序按「插件名 + 文件名」设置。
+  -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' asset:; img-src 'self' asset: data: blob:; media-src 'self' asset: blob:; style-src 'unsafe-inline'; script-src 'self'" />
+  <style>
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
+      background: #101114; color: #e2e4e8;
+      font-family: "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+      user-select: none;
+    }
+    /* 内容容器：宿主给的空盒子，viewer 把 <video> 建在这里面 */
+    #host-content {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      background: #000;
+      cursor: pointer;      /* 提示「点画面能暂停/播放」 */
+    }
+    #host-content video {
+      max-width: 100%; max-height: 100%;
+      display: block; outline: none; background: #000;
+    }
+
+    /* ── 顶部信息条 ───────────────────────── */
+    .hud-top {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+      display: flex; align-items: baseline; gap: 10px;
+      padding: 12px 16px; pointer-events: none;
+      background: linear-gradient(180deg, rgba(0,0,0,.65), transparent);
+      transition: opacity .25s;
+    }
+    .hud-title { font-size: 13px; font-weight: 600; color: #38bdf8; }
+    .hud-meta { font-size: 11px; color: #9aa3b2; }
+    .hud-status { font-size: 11px; color: #f0b429; margin-left: auto; }
+
+    /* ── 底部控制条 ───────────────────────── */
+    .hud-bottom {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+      padding: 10px 16px 12px;
+      background: linear-gradient(0deg, rgba(0,0,0,.75), transparent);
+      transition: opacity .25s;
+    }
+    .hud-row { display: flex; align-items: center; gap: 10px; }
+    /* 进度条：range 输入，拖动即 seek */
+    #seek {
+      flex: 1; height: 4px; -webkit-appearance: none; appearance: none;
+      background: rgba(255,255,255,.22); border-radius: 2px; cursor: pointer;
+    }
+    #seek::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: #38bdf8; cursor: pointer; border: none;
+    }
+    .hud-time { font-size: 11px; color: #c9d1dc; font-variant-numeric: tabular-nums; min-width: 84px; }
+
+    .hud-btn {
+      background: rgba(255,255,255,.10); color: #e2e4e8;
+      border: 1px solid rgba(255,255,255,.14); border-radius: 5px;
+      font-size: 12px; padding: 4px 10px; cursor: pointer;
+      font-family: inherit;
+    }
+    .hud-btn:hover { background: rgba(255,255,255,.18); }
+    .hud-btn.on { background: rgba(56,189,248,.25); border-color: rgba(56,189,248,.5); color: #bae6fd; }
+
+    /* 播放时淡出控制条，鼠标移入恢复（不挡画面） */
+    body.playing.idle .hud-top,
+    body.playing.idle .hud-bottom { opacity: 0; }
+
+    /* ── 错误提示 ─────────────────────────── */
+    .hud-error {
+      position: fixed; inset: 0; z-index: 20; display: none;
+      flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+      background: rgba(16,17,20,.94); text-align: center; padding: 40px;
+    }
+    .hud-error.show { display: flex; }
+    .hud-error .t { font-size: 14px; color: #e5484d; font-weight: 600; }
+    .hud-error .d { font-size: 12px; color: #8b93a1; max-width: 460px; line-height: 1.7; }
+  </style>
+</head>
+<body>
+  <div id="host-content"></div>
+
+  <div class="hud-top">
+    <span class="hud-title">视频预览</span>
+    <span class="hud-meta" id="hud-meta">正在加载…</span>
+    <span class="hud-status" id="hud-status"></span>
+  </div>
+
+  <div class="hud-bottom">
+    <div class="hud-row">
+      <button class="hud-btn" id="btn-play">▶</button>
+      <span class="hud-time" id="time-now">00:00</span>
+      <input type="range" id="seek" min="0" max="1000" value="0" step="1" />
+      <span class="hud-time" id="time-total">00:00</span>
+    </div>
+    <div class="hud-row" style="margin-top:8px">
+      <button class="hud-btn" id="btn-mute">🔊 声音</button>
+      <input type="range" id="volume" min="0" max="100" value="100" style="width:90px" />
+      <button class="hud-btn" id="btn-rate">1.0×</button>
+      <button class="hud-btn" id="btn-fit">适应窗口</button>
+      <button class="hud-btn" id="btn-fs">全屏</button>
+      <span class="hud-meta" style="margin-left:auto">单击画面 播放/暂停 · 双击画面 全屏 · 空格 播放/暂停 · ←/→ 快退快进 5s</span>
+    </div>
+  </div>
+
+  <div class="hud-error" id="hud-error">
+    <div class="t" id="err-title">无法播放</div>
+    <div class="d" id="err-detail"></div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+     stroke="#a80043" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+     role="img" aria-label="MMD 模型">
+  <!-- 人物半身：头 + 肩（表示「角色模型」） -->
+  <circle cx="12" cy="8" r="3.5" />
+  <path d="M4.8 20.4v-1.1a5.3 5.3 0 0 1 5.3-5.3h3.8a5.3 5.3 0 0 1 5.3 5.3v1.1" />
+</svg>
