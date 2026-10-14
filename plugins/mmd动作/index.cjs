@@ -40,6 +40,17 @@
  *    • `_runtime/audio/*.json`  —— 动作同目录的音频清单
  *    原因见 mirrorSettings() / writeSiblingAudioList() 的注释
  *    （预览窗口的 viewer 没有 fs，只能读插件目录内、经 asset:// 放行的已知路径）。
+ *
+ * ── 关于「套用的模型」──────────────────────────────────────
+ * 本插件**不内置任何模型**。模型由用户在设置里指定，主程序把所选文件夹
+ * 复制到插件目录下，预览时从这里读。
+ *
+ * 开发时常用的是 Tda式初音ミク_盗賊つばき流モーショントレースモデル v1.14
+ *   作者：盗賊つばき   来源：https://bowlroll.net/file/68704
+ *   该模型是改造作品，另需遵守 Tda / 金子卵黄 / じゆるん / WYKP 四位原作者的
+ *   readme，以及 Crypton Future Media 的角色使用准则。
+ *   **授权不允许公开再分发**，所以它被 .gitignore 挡在仓库之外 ——
+ *   不要把它（或任何用户自备的模型）提交上去。详见仓库根目录 CREDITS.md。
  */
 const fs = require('fs')
 const path = require('path')

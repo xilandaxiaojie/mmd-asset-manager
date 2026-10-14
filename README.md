@@ -145,3 +145,21 @@ powershell -ExecutionPolicy Bypass -File build-portable.ps1
   这样主程序里 `__dirname/../../plugins` 的定位逻辑不用改一行代码
 - 便携性：配置和数据都在程序内，整个文件夹拷走即带走全部设置，卸载 = 删文件夹
 
+## 许可与第三方素材
+
+代码以 **MIT** 许可发布，见 [`LICENSE`](LICENSE)。
+
+**第三方素材不适用 MIT**，版权归原作者，部分**明确不可再分发**，
+因此已通过 `.gitignore` 排除在仓库之外 —— 详见 [`CREDITS.md`](CREDITS.md)：
+
+- **MMD 动作插件自带的模型**：Tda式初音ミク_盗賊つばき流モーショントレースモデル v1.14，
+  作者 **盗賊つばき**，来源 <https://bowlroll.net/file/68704>。
+  该模型是改造作品，另需遵守 **Tda / 金子卵黄 / じゆるん / WYKP** 四位原作者的 readme
+  以及 Crypton Future Media 的角色使用准则。**仓库不含该模型**，
+  需要动作预览请自行下载并放入 `plugins/mmd动作/`。
+- **three.js 0.170.0**（MIT，`build-deps/`，仅构建期使用）、
+  **Electron 33.4.11**（MIT）。
+
+> three.js 锁定在 0.170.0：插件预览依赖的 `MMDLoader` / `MMDAnimationHelper`
+> 在 r172 之后被移除，升级会直接导致 MMD 预览失效。
+
