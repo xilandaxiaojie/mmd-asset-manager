@@ -48,11 +48,11 @@ test('封面记录：按根 + 相对路径各自独立', async (t) => {
   t.eq(store.getFolderThumb('r1', ''), null, '没有记录时返回 null')
 
   store.setFolderThumb('r1', '', '根封面.png')
-  store.setFolderThumb('r1', '模型/角色', '初音.blend')
+  store.setFolderThumb('r1', '模型/角色', '角色.blend')
   store.setFolderThumb('r2', '', '别的.png')
 
   t.eq(store.getFolderThumb('r1', ''), '根封面.png', 'r1 根目录')
-  t.eq(store.getFolderThumb('r1', '模型/角色'), '初音.blend', 'r1 子目录')
+  t.eq(store.getFolderThumb('r1', '模型/角色'), '角色.blend', 'r1 子目录')
   t.eq(store.getFolderThumb('r2', ''), '别的.png', '另一个根互不影响')
   t.eq(store.getFolderThumb('r1', '没有这个'), null, '未记录的目录返回 null')
 
