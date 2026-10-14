@@ -1,0 +1,45 @@
+# 让 Git 按文件类型决定换行符，避免跨机器 checkout 后脚本失效
+#
+# 为什么必须显式声明：
+#   Windows 的 .cmd / .bat 由 cmd.exe 解析，**必须用 CRLF** 换行。
+#   若仓库里存的是 LF（或 clone 时被转成 LF），cmd 会解析错乱 ——
+#   表现为莫名其妙的「找不到文件」「不是内部或外部命令」，
+#   而且报错信息常常和真正的原因对不上，很难查。
+#
+#   text=auto 让 Git 自动处理，显式写 eol=crlf 则保证工作区一定是 CRLF。
+
+# 默认：由 Git 自动判断文本文件（仓库内存 LF，检出时按平台转换）
+* text=auto
+
+# Windows 批处理脚本一律 CRLF，且不做转换
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# PowerShell 脚本：Windows 上用 CRLF，避免旧版本解析问题
+*.ps1 text eol=crlf
+
+# 这些是二进制，禁止 Git 改动内容
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.zip binary
+*.exe binary
+*.dll binary
+*.pdf binary
+
+# 文本文件明确标记，便于 diff
+*.js   text
+*.cjs  text
+*.mjs  text
+*.json text
+*.md   text
+*.css  text
+*.html text
+*.yml  text
+*.yaml text

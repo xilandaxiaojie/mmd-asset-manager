@@ -13,12 +13,32 @@
 
 ## 快速开始
 
+从 GitHub 下载的源码**不含依赖**（`node_modules` 是 180 MB 的二进制，按惯例不入库），
+所以第一次运行前必须先装一次依赖：
+
 ```bash
-npm install        # 安装 electron
+npm install        # 只需执行一次，安装 electron
 npm start          # 启动应用
 ```
 
-双击 `start-app.cmd` 也可启动。
+也可以直接双击 `start-app.cmd`。**注意它同样需要先 `npm install`** ——
+没装依赖时它会提示「Electron runtime not found」并告诉你该怎么做，
+而不是弹一个看不懂的「找不到文件」错误。
+
+不想装 Node.js 的话，可以把另一台机器上已装好的 `node_modules` 目录整个拷过来
+（其实只有 `node_modules\electron` 是必需的）。
+
+> 用 pnpm / yarn 也可以：`pnpm install` / `yarn install`。
+
+### 只有要重新构建插件预览时才需要 build-deps
+
+`build-deps/` 里是构建插件 `viewer.mjs` 用的 three.js（同样不含 `node_modules`）。
+**日常运行和跑测试都不需要它** —— 构建好的 `viewer.mjs` 已经在仓库里了。
+只有在改动 `plugins/*/src/*.src.js` 后要重新打包时，才需要：
+
+```bash
+cd build-deps && pnpm install
+```
 
 ## 功能
 
